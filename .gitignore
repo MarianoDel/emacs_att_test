@@ -1,0 +1,12 @@
+#files to not save
+*.lst
+*.o
+*.elf
+*.hex
+*.map
+*.bin
+.tags
+GPATH
+GRTAGS
+GTAGS
+*.zip
