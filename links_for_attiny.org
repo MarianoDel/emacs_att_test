@@ -1,0 +1,57 @@
+* Compilador avr-gcc
+  https://www.microchip.com/mplab/avr-support/avr-and-arm-toolchains-c-compilers
+
+* Utilidad de Programador -avrdude-
+  http://www.nongnu.org/avrdude/
+
+** Problemas particulares con el avrdude usbasp attiny
+   - el usbasp viene preparado para otros micros
+   - hay que hacer un upgrade a un firmware de 2011 pero se necesita otro 
+     programador igual funcionando
+   - segui este link para el upgrade
+     https://www.youtube.com/watch?v=1tU7cAFwzig
+
+** Opciones - Flags
+   http://ladyada.net/learn/avr/avrdude.html
+
+   avrdude -p t10 -c usbasp -P usb -U flash:w|v:blinky.bin:b
+
+*** Lista de micros
+    avrdude -c usbasp -p adsriso
+
+*** Lista de programadores
+    avrdude -c adsriso
+
+*** Otro
+    avr-gcc -mmcu=attiny13a -DF_CPU=1200000 -Os -Wall -Wextra flickled.c -o flickled.elf
+    avr-objcopy -O ihex flickled.elf flickled.hex
+
+* Hardware de Progrmador -USBasp-
+** Pagina original del fabricante
+   https://www.fischl.de/usbasp/
+
+** Pinout
+   http://www.datasheetcafe.com/usbasp-pinout-avr-programmer/
+
+* Todo el proceso
+  http://www.technoblogy.com/show?1YQY
+
+
+* Temas con udev
+Thanks to a friendly user, there is a quick fix so you don't have to run it as root:
+
+A udev rule, placed in a new rule file (named whatever you'd like) in /etc/udev/rules.d/ (or wherever you distro will expect it) will set the permissions for the USBtinyISP correctly.
+
+SUBSYSTEM=="usb", SYSFS{idVendor}=="1781", SYSFS{idProduct}=="0c9f", GROUP="users", MODE="0666"
+or maybe
+SUBSYSTEM=="usb", SYSFS{idVendor}=="1781", SYSFS{idProduct}=="0c9f", GROUP="adm", MODE="0666"
+depending on your distro
+
+(one line!) should do the trick. Sane does something very similar to
+allow regular users to access a scanner.
+
+Another user suggests:
+
+The udev examples given don't work on some systems as the SYSFS parameter is deprecated. The following rule works on recent Ubuntu systems and should probably work on other newer Linux systems:
+
+SUBSYSTEM=="usb", ATTR{product}=="USBtiny", ATTR{idProduct}=="0c9f", ATTRS{idVendor}=="1781", MODE="0660", GROUP="dialout"
